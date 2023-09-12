@@ -1,11 +1,11 @@
-public  class World
+public class World
 {
 
-    public  readonly List<Weapon> Weapons = new List<Weapon>();
-    public  readonly List<Monster> Monsters = new List<Monster>();
-    public  readonly List<Quest> Quests = new List<Quest>();
-    public  readonly List<Location> Locations = new List<Location>();
-    public  readonly Random RandomGenerator = new Random();
+    public readonly List<Weapon> Weapons = new List<Weapon>();
+    public readonly List<Monster> Monsters = new List<Monster>();
+    public readonly List<Quest> Quests = new List<Quest>();
+    public readonly List<Location> Locations = new List<Location>();
+    public readonly Random RandomGenerator = new Random();
 
     public const int WEAPON_ID_RUSTY_SWORD = 1;
     public const int WEAPON_ID_CLUB = 2;
@@ -39,7 +39,7 @@ public  class World
 
     static int playerX = 3; // breedte
     static int playerY = 4; // lengte
-    public  Location current_location;
+    public Location current_location;
 
     public World()
     {
@@ -74,14 +74,13 @@ public  class World
         Monsters.Add(giantSpider);
     }
 
-    public  void PopulateQuests()
+    public void PopulateQuests()
     {
         Quest clearAlchemistGarden =
             new Quest(
                 QUEST_ID_CLEAR_ALCHEMIST_GARDEN,
                 "Clear the alchemist's garden",
-                "Kill rats in the alchemist's garden",
-                MonsterByID(MONSTER_ID_RAT));
+                "Kill rats in the alchemist's garden ");
 
 
 
@@ -89,16 +88,14 @@ public  class World
             new Quest(
                 QUEST_ID_CLEAR_FARMERS_FIELD,
                 "Clear the farmer's field",
-                "Kill snakes in the farmer's field",
-                MonsterByID(MONSTER_ID_SNAKE));
+                "Kill snakes in the farmer's field");
 
 
         Quest clearSpidersForest =
-            new Quest(
-                QUEST_ID_COLLECT_SPIDER_SILK,
-                "Collect spider silk",
-                "Kill spiders in the spider forest",
-                MonsterByID(MONSTER_ID_GIANT_SPIDER));
+                    new Quest(
+                        QUEST_ID_COLLECT_SPIDER_SILK,
+                        "Collect spider silk",
+                        "Kill spiders in the spider forest");
 
 
         Quests.Add(clearAlchemistGarden);
@@ -106,7 +103,7 @@ public  class World
         Quests.Add(clearSpidersForest);
     }
 
-    public  void PopulateLocations()
+    public void PopulateLocations()
     {
         // Create each location
         Location home = new Location(LOCATION_ID_HOME, "Home", "Your house. You really need to clean up the place.", null, null);
@@ -114,13 +111,13 @@ public  class World
         Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Town square", "You see a fountain.", null, null);
 
         Location alchemistHut = new Location(LOCATION_ID_ALCHEMIST_HUT, "Alchemist's hut", "There are many strange plants on the shelves.", null, null);
-        alchemistHut.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
+        alchemistHut.QuestAvailableHere.Add(QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN));
 
         Location alchemistsGarden = new Location(LOCATION_ID_ALCHEMISTS_GARDEN, "Alchemist's garden", "Many plants are growing here.", null, null);
         alchemistsGarden.MonsterLivingHere = MonsterByID(MONSTER_ID_RAT);
 
         Location farmhouse = new Location(LOCATION_ID_FARMHOUSE, "Farmhouse", "There is a small farmhouse, with a farmer in front.", null, null);
-        farmhouse.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD);
+        farmhouse.QuestAvailableHere.Add(QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD));
 
         Location farmersField = new Location(LOCATION_ID_FARM_FIELD, "Farmer's field", "You see rows of vegetables growing here.", null, null);
         farmersField.MonsterLivingHere = MonsterByID(MONSTER_ID_SNAKE);
@@ -128,7 +125,7 @@ public  class World
         Location guardPost = new Location(LOCATION_ID_GUARD_POST, "Guard post", "There is a large, tough-looking guard here.", null, null);
 
         Location bridge = new Location(LOCATION_ID_BRIDGE, "Bridge", "A stone bridge crosses a wide river.", null, null);
-        bridge.QuestAvailableHere = QuestByID(QUEST_ID_COLLECT_SPIDER_SILK);
+        bridge.QuestAvailableHere.Add(QuestByID(QUEST_ID_COLLECT_SPIDER_SILK));
 
         Location spiderField = new Location(LOCATION_ID_SPIDER_FIELD, "Forest", "You see spider webs covering covering the trees in this forest.", null, null);
         spiderField.MonsterLivingHere = MonsterByID(MONSTER_ID_GIANT_SPIDER);
@@ -171,7 +168,7 @@ public  class World
         Locations.Add(spiderField);
     }
 
-    public  Location LocationByID(int id)
+    public Location LocationByID(int id)
     {
         foreach (Location location in Locations)
         {
@@ -184,7 +181,7 @@ public  class World
         return null;
     }
 
-    public  Weapon WeaponByID(int id)
+    public Weapon WeaponByID(int id)
     {
         foreach (Weapon item in Weapons)
         {
@@ -199,7 +196,7 @@ public  class World
 
 
 
-    public  Monster MonsterByID(int id)
+    public Monster MonsterByID(int id)
     {
         foreach (Monster monster in Monsters)
         {
@@ -212,7 +209,7 @@ public  class World
         return null;
     }
 
-    public  Quest QuestByID(int id)
+    public Quest QuestByID(int id)
     {
         foreach (Quest quest in Quests)
         {
@@ -225,7 +222,7 @@ public  class World
         return null;
     }
 
-    public  Location MoveLocation(string direction)
+    public Location MoveLocation(string direction)
     {
 
         string current_direction = direction.ToUpper();
@@ -263,8 +260,36 @@ public  class World
                 playerX -= 1;
                 current_location = current_location.LocationToWest;
             }
-            else Console.WriteLine("This is an invalid direction.");
+            Console.WriteLine("This is an invalid direction.");
         }
+
+        // Check if the player has entered a location where a quest should appear
+        Quest availableQuest = null;
+
+        switch (current_location.ID)
+        {
+            case LOCATION_ID_FARM_FIELD:
+                availableQuest = QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD);
+                break;
+            case LOCATION_ID_ALCHEMISTS_GARDEN:
+                availableQuest = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
+                break;
+            case LOCATION_ID_SPIDER_FIELD:
+                availableQuest = QuestByID(QUEST_ID_COLLECT_SPIDER_SILK);
+                break;
+        }
+
+        if (availableQuest != null)
+        {
+            bool questAccepted = current_location.OfferQuest(availableQuest);
+
+            if (questAccepted)
+            {
+                // Handle the quest logic here if the player accepts it.
+                Console.WriteLine("Quest accepted!");
+            }
+        }
+
         return current_location;
     }
 
